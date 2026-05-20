@@ -34,10 +34,15 @@ jobs:
         working-directory: amount-count
         run: pnpm build
 
+      - name: Prepare Pages artifact
+        run: |
+          mkdir -p ./.pages-artifact/amount-count
+          cp -R ./amount-count/dist/. ./.pages-artifact/amount-count/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './amount-count/dist' # 改成你的构建输出目录（dist 或 build）
+          path: './.pages-artifact'
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
