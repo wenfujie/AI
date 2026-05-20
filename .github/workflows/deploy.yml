@@ -20,11 +20,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: npm
+          cache-dependency-path: amount-count/package-lock.json
 
       - name: Install dependencies
+        working-directory: amount-count
         run: npm ci
 
       - name: Build
+        working-directory: amount-count
         run: npm run build
 
       - name: Upload artifact
