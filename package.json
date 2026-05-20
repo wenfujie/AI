@@ -1,0 +1,12 @@
+{
+  "name": "ai",
+  "version": "1.0.0",
+  "description": "用于存放 AI 相关项目，一个文件夹一个项目",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd amount-count && npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
