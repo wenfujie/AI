@@ -12,4 +12,7 @@
 
 新子项目配置自动部署到 github pages。
 
-修改 `.github/workflows/deploy.yml` ，在 `jobs.build-projects.strategy.matrix` 中新增项目配置，目前支持静态html、打包构建两种部署方式，具体参考已有项目示例。
+修改 `.github/workflows/deploy.yml`
+
+1. `on.push.paths` 中添加子项目路径
+2. `jobs.build-projects.strategy.matrix` 中新增项目配置，目前支持静态html、打包构建两种部署方式，具体参考已有项目示例。
