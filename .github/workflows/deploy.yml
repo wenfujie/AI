@@ -2,47 +2,111 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ['main'] # 当推送到 main 分支时触发
+    branches: ['main']
+    paths:
+      - '.github/workflows/deploy.yml'
+      - 'amount-count/**'
+      - 'open-spec-study/**'
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '9'
+
 jobs:
-  deploy:
+  build-projects:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      # 新增项目仅需改此矩阵
+      matrix:
+        include:
+          - name: amount-count
+            workdir: amount-count
+            build_cmd: pnpm install --frozen-lockfile && pnpm build
+            output_path: dist
+            target_subdir: amount-count
+          - name: open-spec-study
+            workdir: open-spec-study
+            build_cmd: ''
+            output_path: index.html
+            target_subdir: open-spec-study
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node
+        if: matrix.build_cmd != ''
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup pnpm
+        if: matrix.build_cmd != ''
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: ${{ env.PNPM_VERSION }}
 
-      - name: Install dependencies
-        working-directory: amount-count
-        run: pnpm install
+      - name: Build project
+        if: matrix.build_cmd != ''
+        working-directory: ${{ matrix.workdir }}
+        run: ${{ matrix.build_cmd }}
 
-      - name: Build
-        working-directory: amount-count
-        run: pnpm build
-
-      - name: Prepare Pages artifact
+      - name: Prepare project artifact
+        shell: bash
         run: |
-          mkdir -p ./.pages-artifact/amount-count
-          cp -R ./amount-count/dist/. ./.pages-artifact/amount-count/
+          set -euo pipefail
+          SOURCE="./${{ matrix.workdir }}/${{ matrix.output_path }}"
+          TARGET="./artifact/${{ matrix.target_subdir }}"
 
-      - name: Upload artifact
+          mkdir -p "$TARGET"
+
+          if [ -d "$SOURCE" ]; then
+            cp -R "$SOURCE"/. "$TARGET"/
+          elif [ -f "$SOURCE" ]; then
+            cp "$SOURCE" "$TARGET/index.html"
+          else
+            echo "::error::Output not found: $SOURCE"
+            exit 1
+          fi
+
+      - name: Upload project artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-${{ matrix.name }}
+          path: ./artifact
+          retention-days: 7
+
+  deploy:
+    needs: build-projects
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Download project artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: site-*
+          path: ./.pages-artifact
+          merge-multiple: true
+
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './.pages-artifact'
+          path: ./.pages-artifact
 
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
