@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI 书籍辅助阅读（免费GLM-4-Flash）</title>
+    <style>
+      body {
+        font-family: 'Microsoft YaHei', sans-serif;
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 0 15px;
+      }
+      textarea {
+        width: 100%;
+        height: 180px;
+        margin: 8px 0;
+        padding: 10px;
+        font-size: 15px;
+      }
+      button {
+        padding: 10px 16px;
+        margin-right: 10px;
+        font-size: 15px;
+        cursor: pointer;
+      }
+      #result {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ccc;
+        min-height: 120px;
+        white-space: pre-wrap;
+      }
+      .tip {
+        color: #666;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>📚 AI 书籍辅助阅读（免费大模型）</h2>
+    <p class="tip">
+      提示：单次粘贴建议不超过 5万字（GLM-4-Flash 支持 128K 上下文）
+    </p>
+
+    <textarea
+      id="bookText"
+      placeholder="请粘贴书籍章节原文（支持长文本）..."
+    ></textarea>
+
+    <div>
+      <button onclick="askSummary()">📝 生成总结</button>
+      <button onclick="askKeyPoints()">🔥 提取重点</button>
+      <button onclick="askOutline()">🧠 思维导图大纲</button>
+    </div>
+
+    <textarea
+      id="question"
+      placeholder="基于书籍内容提问（例如：核心观点是什么？）"
+    ></textarea>
+    <button onclick="askQuestion()">💬 问答</button>
+
+    <div id="result">结果会显示在这里...</div>
+
+    <script>
+      // ========== 在这里填入你的智谱 API Key ==========
+      const API_KEY = 'ebf62fe5c9f346aca445050dda3e458b.rhjvIlwsifFoyO7M' // 替换成你的 key
+      const API_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions'
+
+      // 通用调用函数
+      async function callGLM(prompt) {
+        const bookText = document.getElementById('bookText').value.trim()
+        if (!bookText) {
+          alert('请先粘贴书籍内容')
+          return
+        }
+
+        const resultEl = document.getElementById('result')
+        resultEl.textContent = '思考中...'
+
+        const messages = [
+          {
+            role: 'user',
+            content: `下面是书籍内容：\n${bookText}\n\n${prompt}`
+          }
+        ]
+
+        try {
+          const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${API_KEY}`
+            },
+            body: JSON.stringify({
+              model: 'glm-4-flash', // 免费模型
+              messages: messages,
+              temperature: 0.7,
+              max_tokens: 2048
+            })
+          })
+
+          const data = await res.json()
+          if (data.choices && data.choices[0]) {
+            resultEl.textContent = data.choices[0].message.content
+          } else {
+            resultEl.textContent = '返回异常：' + JSON.stringify(data)
+          }
+        } catch (err) {
+          resultEl.textContent = '请求出错：' + err.toString()
+        }
+      }
+
+      // 1. 总结
+      function askSummary() {
+        callGLM('请对以上内容做精简总结，输出核心思想与段落主旨。')
+      }
+
+      // 2. 重点
+      function askKeyPoints() {
+        callGLM('提取所有重点知识点、金句、核心观点，分点清晰列出。')
+      }
+
+      // 3. 大纲
+      function askOutline() {
+        callGLM('生成结构化思维导图大纲，用层级列表展示书籍逻辑框架。')
+      }
+
+      // 4. 问答
+      function askQuestion() {
+        const q = document.getElementById('question').value.trim()
+        if (!q) {
+          alert('请输入问题')
+          return
+        }
+        callGLM(`请基于书籍内容回答问题：${q}`)
+      }
+    </script>
+  </body>
+</html>

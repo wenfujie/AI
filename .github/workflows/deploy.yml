@@ -7,6 +7,7 @@ on:
       - '.github/workflows/deploy.yml'
       - 'amount-count/**'
       - 'open-spec-study/**'
+      - 'glm-4-flash-demo/**'
   workflow_dispatch:
 
 permissions:
@@ -40,6 +41,11 @@ jobs:
             build_cmd: ''
             output_path: index.html
             target_subdir: open-spec-study
+          - name: glm-4-flash-demo
+            workdir: glm-4-flash-demo
+            build_cmd: ''
+            output_path: index.html
+            target_subdir: glm-4-flash-demo
 
     steps:
       - name: Checkout
