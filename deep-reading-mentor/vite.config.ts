@@ -11,6 +11,7 @@ import { VueRouterAutoImports } from 'vue-router/unplugin'
 import VueRouter from 'vue-router/vite'
 
 export default defineConfig({
+  base: '/AI/deep-reading-mentor/',
   resolve: {
     alias: {
       '~/': `${path.resolve(__dirname, 'src')}/`,
