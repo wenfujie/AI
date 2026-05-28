@@ -6,8 +6,8 @@ on:
     paths:
       - '.github/workflows/deploy.yml'
       - 'amount-count/**'
-      - 'open-spec-study/**'
       - 'glm-4-flash-demo/**'
+      - 'deep-reading-mentor/**'
   workflow_dispatch:
 
 permissions:
@@ -36,16 +36,16 @@ jobs:
             build_cmd: pnpm install --frozen-lockfile && pnpm build
             output_path: dist
             target_subdir: amount-count
-          - name: open-spec-study
-            workdir: open-spec-study
-            build_cmd: ''
-            output_path: index.html
-            target_subdir: open-spec-study
           - name: glm-4-flash-demo
             workdir: glm-4-flash-demo
             build_cmd: ''
             output_path: index.html
             target_subdir: glm-4-flash-demo
+          - name: deep-reading-mentor
+            workdir: deep-reading-mentor
+            build_cmd: pnpm install --frozen-lockfile && pnpm build
+            output_path: dist
+            target_subdir: deep-reading-mentor
 
     steps:
       - name: Checkout

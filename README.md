@@ -2,11 +2,16 @@
 
 用于存放 AI 相关项目，一个文件夹一个项目。
 
-## 项目地图
+## Demo 项目地图
 
 - [`amount-count`](amount-count/README.md)：金额统计
-- [`open-spec-study`](open-spec-study/README.md)：openSpec学习文档
 - [`glm-4-flash-demo`](glm-4-flash-demo/README.md)：智谱免费文字模型接入示例
+- [`deep-reading-mentor`](deep-reading-mentor/README.md)：深度阅读助手
+
+## 笔记文档地图
+
+- [`open-spec-study`](docs/open-spec-study/README.md)：openSpec学习文档
+- [`codegraph-study`](docs/codegraph-study/README.md)：codegraph学习文档
 
 ## 部署
 
