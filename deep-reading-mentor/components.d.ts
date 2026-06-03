@@ -11,8 +11,16 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BookshelfView: typeof import('./src/components/BookshelfView.vue')['default']
+    DailyReviewView: typeof import('./src/components/DailyReviewView.vue')['default']
+    MentorConfirmDialog: typeof import('./src/components/MentorConfirmDialog.vue')['default']
+    MentorNoticeToast: typeof import('./src/components/MentorNoticeToast.vue')['default']
+    MentorSidebar: typeof import('./src/components/MentorSidebar.vue')['default']
+    ReadingView: typeof import('./src/components/ReadingView.vue')['default']
+    ReviewView: typeof import('./src/components/ReviewView.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TheFooter: typeof import('./src/components/TheFooter.vue')['default']
+    TopicsView: typeof import('./src/components/TopicsView.vue')['default']
   }
 }
