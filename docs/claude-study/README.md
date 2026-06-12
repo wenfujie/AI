@@ -73,7 +73,7 @@ which claude
 
 **使用方式**：
 
-- `/review-pr`：代码质量全维度审查**，覆盖规范、测试、注释、类型、错误处理、可读性，本地开发常用
+- `/review-pr`：代码质量全维度审查\*\*，覆盖规范、测试、注释、类型、错误处理、可读性，本地开发常用
 - `/code-review`：很少用，pull request 时使用，在线上运行
 - `/security-review`：只做安全检查
 - 支持指定评审维度（bugs/security/style/performance）
